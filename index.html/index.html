@@ -9,56 +9,73 @@
             --border: #cfd8dc; --accent: #ff9800; --active-gray: #78909c; --pdf: #e53935;
         }
         body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background: var(--bg); color: #333; max-width: 1200px; margin: auto; }
+        
+        /* 테이블 전체 폰트 크기 강제 통일 */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 35px; table-layout: fixed; }
+        
+        /* [핵심 수정] 좌측(th)과 우측(td)의 모든 텍스트 크기를 1rem으로 강제 고정 */
+        th, td, td *, th * { 
+            font-size: 1rem !important; 
+            line-height: 1.6 !important;
+        }
+        
+        th { background: #f8f9fa; width: 25%; font-weight: bold; color: #455a64; border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; }
+        td { border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; background: #fff; }
+
+        /* [수정] 랩 이름 [랩명] 부분 스타일 강제 고정 */
+        .cto-lab-item b { 
+            font-size: 1rem !important; 
+            font-weight: bold !important; 
+            color: #111 !important; 
+            display: inline-block; 
+            margin-bottom: 5px;
+        }
+        
+        /* [수정] 내용 앞에 붙는 부호(-) 스타일 */
+        .content-view { 
+            position: relative; 
+            padding-left: 15px; 
+            font-size: 1rem !important; 
+            display: block;
+        }
+        .content-view::before { 
+            content: "-"; 
+            position: absolute; 
+            left: 0; 
+            top: 0; 
+            color: #546e7a; 
+            font-weight: bold;
+            font-size: 1rem !important;
+        }
+
+        /* 기타 스타일 유지 */
         h1 { text-align: center; color: #111; margin-top: 30px; margin-bottom: 5px; }
-        
         .target-date { text-align: center; font-weight: bold; font-size: 1.15rem; color: var(--primary); margin-bottom: 30px; background: #fff; display: inline-block; padding: 10px 20px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; left: 50%; transform: translateX(-50%); border: 1px solid var(--border); }
-        
         .card { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e9ecef; }
-        
         .sticky-sub-nav { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.98); padding: 12px; border-bottom: 2px solid var(--primary); display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .btn-q { padding: 6px 12px; font-size: 0.82rem; cursor: pointer; border: 1px solid #dee2e6; background: #fff; color: #495057; border-radius: 4px; font-weight: bold; }
         .btn-q.active-section { background: var(--active-gray) !important; color: white !important; border-color: var(--active-gray); }
-
         h2 { font-size: 1.25rem; color: #263238; margin: 40px 0 15px; padding-bottom: 10px; border-bottom: 2px solid #cfd8dc; scroll-margin-top: 150px; }
         h3 { font-size: 1.15rem; margin: 30px 0 10px; background: var(--primary-light); padding: 14px; border-radius: 4px; border-left: 5px solid var(--primary); font-weight: bold; scroll-margin-top: 180px; }
-        
         .header-box { display: flex; justify-content: space-between; align-items: flex-start; background: #f1f3f5; padding: 20px; border-radius: 8px; margin-bottom: 10px; }
         .lab-input { padding: 10px; width: 250px; border: 2px solid #ced4da; border-radius: 4px; font-size: 1rem; }
-
         .editor-wrapper { margin-bottom: 20px; }
         .toolbar { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
         .toolbar strong { color: #37474f; font-size: 1.05rem; margin-right: 10px; font-weight: bold; }
         .btn-tool { padding: 4px 10px; font-size: 0.85rem; cursor: pointer; border: 1px solid #cfd8dc; background: #fff; border-radius: 4px; font-weight: bold; }
-
         .editable { border: 1px solid #ced4da; padding: 15px; min-height: 100px; border-radius: 4px; background: #fff; line-height: 1.6; outline: none; font-size: 1rem; }
-        
         .guide-banner { color: #455a64; font-size: 0.95rem; font-weight: bold; background: #e3f2fd; padding: 10px 18px; border-radius: 6px; border-left: 4px solid #2196f3; }
-
         .action-area { display: flex; flex-direction: column; gap: 10px; margin: 40px 0; }
         .main-btn-style { width: 100%; padding: 18px; font-size: 1.15rem; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; }
         .reg-btn { background: var(--success); color: white; }
         .mode-btns { display: flex; gap: 10px; }
         .btn-mode { flex: 1; background: #fff; color: var(--primary); border: 1.5px solid #cfd8dc; }
         .btn-mode.active { background: var(--primary); color: white; border-color: var(--primary); }
-
         .nav-week-ctrl { display: flex; align-items: center; justify-content: center; gap: 20px; background: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #dee2e6; }
         .week-display { font-size: 1rem; font-weight: bold; color: var(--primary); min-width: 220px; text-align: center; }
         .btn-nav { padding: 8px 15px; font-size: 0.9rem; cursor: pointer; border-radius: 5px; border: 1px solid var(--border); background: #fff; font-weight: bold; }
         .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
-        
-        /* 테이블 텍스트 크기 통일 */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 35px; table-layout: fixed; }
-        th, td { border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; font-size: 1rem; line-height: 1.6; }
-        th { background: #f8f9fa; width: 25%; font-weight: bold; color: #455a64; }
-        
-        /* [수정] 랩 이름 텍스트 크기 강제 고정 (b 태그 스타일링) */
-        .cto-lab-item b { font-size: 1rem; font-weight: bold; color: #333; display: inline-block; margin-bottom: 3px; }
-        
-        .content-view { position: relative; padding-left: 15px; font-size: 1rem; }
-        .content-view::before { content: "-"; position: absolute; left: 0; top: 0; color: #546e7a; font-weight: bold; }
-
         .section-tag { font-weight: bold; margin: 35px 0 10px; display: block; font-size: 1.1rem; color: var(--primary); border-left: 5px solid var(--primary); padding-left: 12px; }
-        
         .btn-group-view { display: flex; justify-content: center; gap: 15px; margin-top: 30px; padding: 15px; border-top: 1px solid #eee; }
         .btn-view-action { padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; border: 1px solid #cfd8dc; background: #fff; color: #607d8b; }
         .btn-pdf { background: var(--pdf) !important; color: white !important; border: none !important; }
@@ -94,20 +111,16 @@
             📂 지난주 주간보고 불러오기
         </button>
     </div>
-
     <div class="header-box">
         <div><strong>Lab 이름:</strong> <input type="text" id="labName" class="lab-input" placeholder="예: 서비스개발Lab"></div>
         <div id="writeDay"></div>
     </div>
-
     <h2 id="section-1">1. 금주/차주 LAB별 주요 일정</h2><div id="container-1"></div>
     <h2 id="section-2">2. 차주 지시사항 F/U</h2><div id="container-2"></div>
     <h2 id="section-3">3. 주요 장애/작업/기타 보고사항</h2><div id="container-3"></div>
-    
     <h2 id="section-4">4. Lab 별 최우선과제 추진 현황</h2>
     <div id="sub-nav-4" class="sticky-sub-nav"></div>
     <div id="container-4"></div>
-    
     <div class="action-area">
         <button class="main-btn-style reg-btn" onclick="saveData()">등록하기</button>
         <div class="mode-btns">
@@ -131,6 +144,7 @@
 </div>
 
 <script>
+    /* 데이터 및 로직 생략 (동일하되 renderCTO 부분의 클래스 확인 필요) */
     const priMap = {
         "1) AX 기술 Stack 확보": ["SRM align 확보 및 상용화 계획 수립/추천","경쟁력 비교방안 재점검 및 경쟁우위율 목표 수립","SaaS 기반 AX 공용/모듈 구축 및 재활용","소버린 클라우드"],
         "2) SaaS 기술 Stack 확보": ["모듈화 대상 검토 및 선정","SaaS 상품화 벤치마킹 및 요구사항 정리","기술 개발 계획 및 통합 로드맵 도출","SaaS 공통 기술 개발 추진"],
@@ -148,7 +162,6 @@
         "14) 지속 가능한 보안 실행력 강화": ["CTO 보안 5대과제 (비밀번호, 암호화 등)","자산관리 (서비스/시스템 인벤토리 구축)","Ucube 불용 데이터 정비","모바일 IMSI 체계 변경"],
         "15) [ZBB] 개발/운영 효율화": ["예산관리 및 ZBB 연계 프로세스 재정립","고정성 인건비 효율화","고정성 수선비/임차료 효율화"]
     };
-
     const fuList = ["AX 기술 Stack 확보", "서비스 생산시스템 체계 전환", "Claud/SaaS 전환", "기본기강화", "기타"];
     const issueList = ["장애", "기타"];
     let db = JSON.parse(localStorage.getItem('weeklyDB') || '[]');
@@ -178,7 +191,6 @@
         ["금주 주요 일정", "차주 주요 일정"].forEach((l, i) => createEditor('container-1', l, `s1-${i}`));
         fuList.forEach((l, i) => createEditor('container-2', l, `s2-${i}`));
         issueList.forEach((l, i) => createEditor('container-3', l, `issue-${i}`));
-        
         Object.keys(priMap).forEach((title, i) => {
             const safeId = `s4-group-${i}`;
             document.getElementById('container-4').innerHTML += `<h3 id="${safeId}" class="pri-header">${title}</h3><div id="sub-box-${i}"></div>`;
@@ -189,67 +201,31 @@
         window.addEventListener('scroll', handleScroll);
     };
 
-    function goToSection(id) {
-        const el = document.getElementById(id);
-        if(el) {
-            const offset = el.getBoundingClientRect().top + window.pageYOffset - 175;
-            window.scrollTo({ top: offset, behavior: "auto" });
-        }
-    }
-
+    function goToSection(id) { const el = document.getElementById(id); if(el) { const offset = el.getBoundingClientRect().top + window.pageYOffset - 175; window.scrollTo({ top: offset, behavior: "auto" }); } }
     function handleScroll() {
-        const headers = document.querySelectorAll('.pri-header');
-        let currentIdx = -1;
-        headers.forEach((header, i) => {
-            const rect = header.getBoundingClientRect();
-            if (rect.top <= 190) currentIdx = i;
-        });
-        document.querySelectorAll('#sub-nav-4 .btn-q').forEach((btn, i) => {
-            btn.classList.toggle('active-section', i === currentIdx);
-        });
+        const headers = document.querySelectorAll('.pri-header'); let currentIdx = -1;
+        headers.forEach((header, i) => { const rect = header.getBoundingClientRect(); if (rect.top <= 190) currentIdx = i; });
+        document.querySelectorAll('#sub-nav-4 .btn-q').forEach((btn, i) => { btn.classList.toggle('active-section', i === currentIdx); });
     }
-
-    function updateSortedWeeks() { 
-        sortedWeeks = [...new Set(db.map(d => d.weekKey))].sort((a,b) => b.localeCompare(a)); 
-    }
-
-    function updateNavButtons() {
-        document.getElementById('prevWeekBtn').disabled = (currentWeekIdx >= sortedWeeks.length - 1);
-        document.getElementById('nextWeekBtn').disabled = (currentWeekIdx <= 0);
-    }
-
-    function moveWeek(dir) {
-        const nextIdx = currentWeekIdx + dir;
-        if (nextIdx >= 0 && nextIdx < sortedWeeks.length) {
-            currentWeekIdx = nextIdx;
-            refreshView();
-        }
-    }
-
+    function updateSortedWeeks() { sortedWeeks = [...new Set(db.map(d => d.weekKey))].sort((a,b) => b.localeCompare(a)); }
+    function updateNavButtons() { document.getElementById('prevWeekBtn').disabled = (currentWeekIdx >= sortedWeeks.length - 1); document.getElementById('nextWeekBtn').disabled = (currentWeekIdx <= 0); }
+    function moveWeek(dir) { const nextIdx = currentWeekIdx + dir; if (nextIdx >= 0 && nextIdx < sortedWeeks.length) { currentWeekIdx = nextIdx; refreshView(); } }
     function setMode(mode) { 
         document.getElementById('btn-lab').classList.toggle('active', mode === 'lab'); 
         document.getElementById('btn-cto').classList.toggle('active', mode === 'cto'); 
         document.getElementById('resultView').style.display = 'block';
-        currentWeekIdx = 0;
-        refreshView(mode); 
+        currentWeekIdx = 0; refreshView(mode); 
         window.scrollTo({ top: document.getElementById('resultView').offsetTop - 20, behavior: "auto" });
     }
-
     function refreshView(mode) { 
-        updateSortedWeeks();
-        if (sortedWeeks.length === 0) return;
-        const week = sortedWeeks[currentWeekIdx];
-        document.getElementById('weekDisplay').innerText = week;
-        updateNavButtons();
-        const filtered = db.filter(d => d.weekKey === week); 
+        updateSortedWeeks(); if (sortedWeeks.length === 0) return;
+        const week = sortedWeeks[currentWeekIdx]; document.getElementById('weekDisplay').innerText = week;
+        updateNavButtons(); const filtered = db.filter(d => d.weekKey === week); 
         const btns = document.getElementById('labButtons'); btns.innerHTML = ""; 
         const curMode = mode || (document.getElementById('btn-lab').classList.contains('active') ? 'lab' : 'cto'); 
-        
         if(curMode === 'lab') { 
             const selLab = filtered.length ? filtered[0].lab : null;
-            filtered.forEach(d => {
-                btns.innerHTML += `<button class="btn-q ${d.lab === selLab ? "active-section" : ""}" onclick="renderLab('${week}', '${d.lab}')">${d.lab}</button>`;
-            }); 
+            filtered.forEach(d => { btns.innerHTML += `<button class="btn-q ${d.lab === selLab ? "active-section" : ""}" onclick="renderLab('${week}', '${d.lab}')">${d.lab}</button>`; }); 
             if(selLab) renderLab(week, selLab); 
         } else { renderCTO(filtered, week); } 
     }
@@ -287,8 +263,7 @@
             labels.forEach((l, i) => { 
                 let cell = filtered.filter(d => d.lab !== "CTO 통합").map(d => { 
                     let v = isDeep ? (d.d4 && d.d4[dIdx] ? d.d4[dIdx][i] : "") : d[key][i]; 
-                    /* [수정] 랩 이름을 감싸는 div에 cto-lab-item 클래스 적용 */
-                    return isEmpty(v) ? null : `<div class="cto-lab-item" style="margin-bottom:15px; border-bottom:1px dashed #eee; padding-bottom:5px;"><b>[${d.lab}]</b><br>${wrapContent(v)}</div>`; 
+                    return isEmpty(v) ? null : `<div class="cto-lab-item" style="margin-bottom:15px; border-bottom:1px dashed #eee; padding-bottom:10px;"><b>[${d.lab}]</b><br>${wrapContent(v)}</div>`; 
                 }).filter(Boolean).join(''); 
                 if(cell) { t += `<tr><th>${l}</th><td>${cell}</td></tr>`; has = true; } 
             }); return has ? t + `</table>` : ''; 
@@ -306,7 +281,6 @@
         if(!lab || lab === "CTO 통합") showLabSelector('selectLabAndLoad');
         else loadPreviousWeekData(lab);
     }
-
     function showLabSelector(callback) {
         const labs = [...new Set(db.map(d => d.lab))].filter(l => l && l !== "CTO 통합");
         if(labs.length === 0) return alert("데이터가 없습니다.");
@@ -315,17 +289,14 @@
         document.getElementById('overlay').style.display = 'block';
         document.getElementById('labSelector').style.display = 'block';
     }
-
     function selectLabAndLoad(lab) { document.getElementById('labName').value = lab; closeLabSelector(); loadPreviousWeekData(lab); }
     function closeLabSelector() { document.getElementById('overlay').style.display = 'none'; document.getElementById('labSelector').style.display = 'none'; }
-
     function loadPreviousWeekData(lab) {
         updateSortedWeeks(); const pastWeeks = sortedWeeks.filter(w => !w.startsWith(curWeek.full));
         if(pastWeeks.length === 0) return alert("이전 주차 데이터가 없습니다.");
         const prevData = db.find(x => x.weekKey === pastWeeks[0] && x.lab === lab);
         if(prevData && confirm(`지난주 데이터를 불러올까요?`)) fillEditor(prevData);
     }
-
     function fillEditor(d) { 
         document.getElementById('s1-0').innerHTML = safeStr(d.d1[0]); document.getElementById('s1-1').innerHTML = safeStr(d.d1[1]); 
         fuList.forEach((_, i) => document.getElementById(`s2-${i}`).innerHTML = safeStr(d.d2[i])); 
@@ -334,9 +305,7 @@
             const el = document.getElementById(`s4-${i}-${j}`); if(el) el.innerHTML = safeStr(d.d4[i][j]);
         })); 
     }
-
     function loadSingleToEditor(week, lab) { if(confirm('편집창으로 불러올까요?')) { const d = db.find(x => x.weekKey === week && x.lab === lab); document.getElementById('labName').value = d.lab; fillEditor(d); window.scrollTo({ top: 0, behavior: "auto" }); } }
-    
     function loadCTOToEditorAction(week) {
         if(confirm('모든 내용을 편집창으로 불러올까요?')) {
             const filtered = db.filter(d => d.weekKey === week && d.lab !== "CTO 통합");
@@ -350,7 +319,6 @@
             window.scrollTo({ top: 0, behavior: "auto" });
         }
     }
-
     function saveData() { 
         const lab = document.getElementById('labName').value.trim(); if(!lab) return alert("Lab 이름을 입력하세요.");
         const fullWeekKey = curWeek.full + " " + curWeek.range; 
