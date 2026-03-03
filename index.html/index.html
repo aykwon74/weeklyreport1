@@ -12,47 +12,23 @@
         
         table { width: 100%; border-collapse: collapse; margin-bottom: 35px; table-layout: fixed; }
         
-        /* [핵심 수정] 좌측 항목명(th) 1.2rem으로 확대 */
+        /* 좌측 항목명(th) 1.2rem */
         th { 
-            background: #f1f3f5; 
-            width: 25%; 
-            font-size: 1.2rem !important; 
-            font-weight: 800 !important; 
-            color: #263238; 
-            border: 1px solid #cfd8dc; 
-            padding: 15px 12px; 
-            text-align: left; 
-            vertical-align: middle; 
+            background: #f1f3f5; width: 25%; font-size: 1.2rem !important; font-weight: 800 !important; 
+            color: #263238; border: 1px solid #cfd8dc; padding: 15px 12px; text-align: left; vertical-align: middle; 
         }
 
-        /* [핵심 수정] 우측 내용(td) 및 모든 입력/조회 텍스트 0.8rem으로 축소 */
-        td, .editable, .content-view, .cto-lab-item { 
-            font-size: 0.8rem !important; 
-            line-height: 1.6 !important;
-        }
-        
+        /* 우측 및 입력란 0.8rem */
+        td, .editable, .content-view, .cto-lab-item { font-size: 0.8rem !important; line-height: 1.6 !important; }
         td { border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; background: #fff; }
 
-        /* 랩명 [랩명] 스타일 (내용보다 약간 강조되도록 0.85rem) */
-        .cto-lab-item b { 
-            font-size: 0.85rem !important; 
-            font-weight: bold !important; 
-            color: #000 !important; 
-            display: inline-block; 
-            margin-bottom: 4px;
-        }
-        
-        /* 불렛 스타일 크기 조정 */
+        .cto-lab-item b { font-size: 0.85rem !important; font-weight: bold !important; color: #000 !important; display: inline-block; margin-bottom: 4px; }
         .content-view { position: relative; padding-left: 12px; display: block; }
         .content-view::before { content: "-"; position: absolute; left: 0; top: 0; font-weight: bold; }
 
-        /* 입력란(에디터) 폰트 크기 강제 적용 */
-        .editable { 
-            border: 1px solid #ced4da; padding: 15px; min-height: 100px; border-radius: 4px; 
-            background: #fff; outline: none; overflow-y: auto;
-        }
+        .editable { border: 1px solid #ced4da; padding: 15px; min-height: 100px; border-radius: 4px; background: #fff; outline: none; }
 
-        /* 기타 UI 요소 */
+        /* UI 레이아웃 */
         h1 { text-align: center; color: #111; margin-top: 30px; margin-bottom: 5px; }
         .target-date { text-align: center; font-weight: bold; font-size: 1.15rem; color: var(--primary); margin-bottom: 30px; background: #fff; display: inline-block; padding: 10px 20px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; left: 50%; transform: translateX(-50%); border: 1px solid var(--border); }
         .card { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e9ecef; }
@@ -134,25 +110,8 @@
 </div>
 
 <script>
-    /* 데이터 맵 및 로직 (v16.7 동일 유지) */
-    const priMap = {
-        "1) AX 기술 Stack 확보": ["SRM align 확보 및 상용화 계획 수립/추천","경쟁력 비교방안 재점검 및 경쟁우위율 목표 수립","SaaS 기반 AX 공용/모듈 구축 및 재활용","소버린 클라우드"],
-        "2) SaaS 기술 Stack 확보": ["모듈화 대상 검토 및 선정","SaaS 상품화 벤치마킹 및 요구사항 정리","기술 개발 계획 및 통합 로드맵 도출","SaaS 공통 기술 개발 추진"],
-        "3) 서비스 생산 시스템 체계 전환": ["SDLC AX화 (ixi-O, AICC, U+one pilot 적용)","SRM-PPM-TRM 연계 수립 (ixi-O, AICC pilot 적용)","기술 자산화 및 활용","개발 프로세스 수립 (ITSM Jira 고려)","SDLC 공정/영역별 점검양식 표준화 (checklist, SOP)","외주협력 관리체계 수립 (Ucube, 모바일, 홈, 기업 등)","개발/검증환경 고도화 및 구축 (ixi-O)","개발/운영 visibility 시스템 검토 및 도입"],
-        "4) AX Readiness": ["[Model Ready] 모델별 가격 경쟁 비교 및 최적 전략","[Model Ready] 모델 개발 workflow 정리 및 최적화","[Model Ready] AXOps 로드맵 수립 및 구현","[Model Ready] 모델 학습 위한 Data Foundry 구축","[Data Ready] 전사 Data 거버넌스","[Data Ready] Agent 서비스 향 데이터 개발","[Data Ready] Knowledge 플랫폼 구축","[Data Ready] Ucube 정형/비정형 데이터 정제 (CSS)","[Agent Ready] AI Agent 플랫폼 및 거버넌스 체계","기타 Lab별 진행현황"],
-        "5) Claud/SaaS 전환 (클라우드)": ["U+표준 클라우드 플랫폼 설계/구축","전체 전환 서비스 대상 Assessment","시범 서비스 전환","기타 Lab별 진행현황"],
-        "6) Claud/SaaS 전환 (IT SaaS)": ["전사 IT SaaS 로드맵 수립","IT SaaS 시스템 간 workflow 맵 수립","3종 IT 시스템 통합 및 마당 전환","Jira, Conf SaaS 통합","메달리아 VOC 허브 구축","업무환경 AI 도입 (Copilot, Gemini)","기타 Lab별 진행현황"],
-        "7) Autonomous Development": ["[직접 개발] workflow 기반 AX 대상 식별 및 계획","[외주 개발] workflow 기반 AX 대상 식별 및 계획","[운영 AX화] workflow 기반 AX 대상 식별 및 계획","시스템/Tool 검토 및 도입 (보안 고려)"],
-        "8) 데이터 기반 Seg. 체계 구축": ["Seg 별 데이터 구축 (5대 Seg 확장)","B2B, B2C 영업 에이전트 구축"],
-        "9) Simply U+ 상품/서비스 혁신": ["Simiple Lab 상품 서비스 혁신","요금/상품/서비스 구조 최적화"],
-        "10) AX 상품 경쟁력 강화 (AICC)": ["ixi-O 글로벌화 및 시스템 모듈화/SaaS화","ixi-O 상품 경쟁력 강화 및 SRM 연계 개발","AICC SaaS 플랫폼 구축","AICC 상품 경쟁력 강화 및 SRM 연계 개발","AICC 상품 수주 대응"],
-        "11) AX 상품 경쟁력 강화 (B2B)": ["ixi-Enterprise 사업화","ixi-Drive 사업화","보안 SaaS","기타 Lab 별 진행사항"],
-        "12) AX 상품 경쟁력 강화 (B2C)": ["일등로밍 실행 과제 개발","스마트CS 페이퍼리스","통합안심 요금제 출시","요금 시뮬레이터","모바일 통신 인프라/서비스 고도화","홈사업 고객경험개선 및 비용효율화","5G SA 전환/주파수"],
-        "13) 고객중심 E2E 품질 체계 구축": ["품질 체크리스트 및 SOP 강화","개발 프로세스 재정립","MTTR 개선과제 도출 및 실행","기타 Lab별 진행현황"],
-        "14) 지속 가능한 보안 실행력 강화": ["CTO 보안 5대과제 (비밀번호, 암호화 등)","자산관리 (서비스/시스템 인벤토리 구축)","Ucube 불용 데이터 정비","모바일 IMSI 체계 변경"],
-        "15) [ZBB] 개발/운영 효율화": ["예산관리 및 ZBB 연계 프로세스 재정립","고정성 인건비 효율화","고정성 수선비/임차료 효율화"]
-    };
-
+    /* 데이터 및 초기 설정 로직 생략 (v16.9와 동일) */
+    const priMap = { "1) AX 기술 Stack 확보": ["SRM align 확보 및 상용화 계획 수립/추천","경쟁력 비교방안 재점검 및 경쟁우위율 목표 수립","SaaS 기반 AX 공용/모듈 구축 및 재활용","소버린 클라우드"], "2) SaaS 기술 Stack 확보": ["모듈화 대상 검토 및 선정","SaaS 상품화 벤치마킹 및 요구사항 정리","기술 개발 계획 및 통합 로드맵 도출","SaaS 공통 기술 개발 추진"], "3) 서비스 생산 시스템 체계 전환": ["SDLC AX화 (ixi-O, AICC, U+one pilot 적용)","SRM-PPM-TRM 연계 수립 (ixi-O, AICC pilot 적용)","기술 자산화 및 활용","개발 프로세스 수립 (ITSM Jira 고려)","SDLC 공정/영역별 점검양식 표준화 (checklist, SOP)","외주협력 관리체계 수립 (Ucube, 모바일, 홈, 기업 등)","개발/검증환경 고도화 및 구축 (ixi-O)","개발/운영 visibility 시스템 검토 및 도입"], "4) AX Readiness": ["[Model Ready] 모델별 가격 경쟁 비교 및 최적 전략","[Model Ready] 모델 개발 workflow 정리 및 최적화","[Model Ready] AXOps 로드맵 수립 및 구현","[Model Ready] 모델 학습 위한 Data Foundry 구축","[Data Ready] 전사 Data 거버넌스","[Data Ready] Agent 서비스 향 데이터 개발","[Data Ready] Knowledge 플랫폼 구축","[Data Ready] Ucube 정형/비정형 데이터 정제 (CSS)","[Agent Ready] AI Agent 플랫폼 및 거버넌스 체계","기타 Lab별 진행현황"], "5) Claud/SaaS 전환 (클라우드)": ["U+표준 클라우드 플랫폼 설계/구축","전체 전환 서비스 대상 Assessment","시범 서비스 전환","기타 Lab별 진행현황"], "6) Claud/SaaS 전환 (IT SaaS)": ["전사 IT SaaS 로드맵 수립","IT SaaS 시스템 간 workflow 맵 수립","3종 IT 시스템 통합 및 마당 전환","Jira, Conf SaaS 통합","메달리아 VOC 허브 구축","업무환경 AI 도입 (Copilot, Gemini)","기타 Lab별 진행현황"], "7) Autonomous Development": ["[직접 개발] workflow 기반 AX 대상 식별 및 계획","[외주 개발] workflow 기반 AX 대상 식별 및 계획","[운영 AX화] workflow 기반 AX 대상 식별 및 계획","시스템/Tool 검토 및 도입 (보안 고려)"], "8) 데이터 기반 Seg. 체계 구축": ["Seg 별 데이터 구축 (5대 Seg 확장)","B2B, B2C 영업 에이전트 구축"], "9) Simply U+ 상품/서비스 혁신": ["Simiple Lab 상품 서비스 혁신","요금/상품/서비스 구조 최적화"], "10) AX 상품 경쟁력 강화 (AICC)": ["ixi-O 글로벌화 및 시스템 모듈화/SaaS화","ixi-O 상품 경쟁력 강화 및 SRM 연계 개발","AICC SaaS 플랫폼 구축","AICC 상품 경쟁력 강화 및 SRM 연계 개발","AICC 상품 수주 대응"], "11) AX 상품 경쟁력 강화 (B2B)": ["ixi-Enterprise 사업화","ixi-Drive 사업화","보안 SaaS","기타 Lab 별 진행사항"], "12) AX 상품 경쟁력 강화 (B2C)": ["일등로밍 실행 과제 개발","스마트CS 페이퍼리스","통합안심 요금제 출시","요금 시뮬레이터","모바일 통신 인프라/서비스 고도화","홈사업 고객경험개선 및 비용효율화","5G SA 전환/주파수"], "13) 고객중심 E2E 품질 체계 구축": ["품질 체크리스트 및 SOP 강화","개발 프로세스 재정립","MTTR 개선과제 도출 및 실행","기타 Lab별 진행현황"], "14) 지속 가능한 보안 실행력 강화": ["CTO 보안 5대과제 (비밀번호, 암호화 등)","자산관리 (서비스/시스템 인벤토리 구축)","Ucube 불용 데이터 정비","모바일 IMSI 체계 변경"], "15) [ZBB] 개발/운영 효율화": ["예산관리 및 ZBB 연계 프로세스 재정립","고정성 인건비 효율화","고정성 수선비/임차료 효율화"] };
     const fuList = ["AX 기술 Stack 확보", "서비스 생산시스템 체계 전환", "Claud/SaaS 전환", "기본기강화", "기타"];
     const issueList = ["장애", "기타"];
     let db = JSON.parse(localStorage.getItem('weeklyDB') || '[]');
@@ -201,6 +160,7 @@
     function updateSortedWeeks() { sortedWeeks = [...new Set(db.map(d => d.weekKey))].sort((a,b) => b.localeCompare(a)); }
     function updateNavButtons() { document.getElementById('prevWeekBtn').disabled = (currentWeekIdx >= sortedWeeks.length - 1); document.getElementById('nextWeekBtn').disabled = (currentWeekIdx <= 0); }
     function moveWeek(dir) { const nextIdx = currentWeekIdx + dir; if (nextIdx >= 0 && nextIdx < sortedWeeks.length) { currentWeekIdx = nextIdx; refreshView(); } }
+    
     function setMode(mode) { 
         document.getElementById('btn-lab').classList.toggle('active', mode === 'lab'); 
         document.getElementById('btn-cto').classList.toggle('active', mode === 'cto'); 
@@ -208,17 +168,27 @@
         currentWeekIdx = 0; refreshView(mode); 
         window.scrollTo({ top: document.getElementById('resultView').offsetTop - 20, behavior: "auto" });
     }
+
     function refreshView(mode) { 
         updateSortedWeeks(); if (sortedWeeks.length === 0) return;
         const week = sortedWeeks[currentWeekIdx]; document.getElementById('weekDisplay').innerText = week;
-        updateNavButtons(); const filtered = db.filter(d => d.weekKey === week); 
-        const btns = document.getElementById('labButtons'); btns.innerHTML = ""; 
+        updateNavButtons(); 
+        
         const curMode = mode || (document.getElementById('btn-lab').classList.contains('active') ? 'lab' : 'cto'); 
+        const btns = document.getElementById('labButtons'); btns.innerHTML = ""; 
+        
+        // [수정] Lab별 조회 모드일 때 "CTO 통합" 데이터는 버튼 목록에서 제외
+        let filtered = db.filter(d => d.weekKey === week);
         if(curMode === 'lab') { 
-            const selLab = filtered.length ? filtered[0].lab : null;
-            filtered.forEach(d => { btns.innerHTML += `<button class="btn-q ${d.lab === selLab ? "active-section" : ""}" onclick="renderLab('${week}', '${d.lab}')">${d.lab}</button>`; }); 
-            if(selLab) renderLab(week, selLab); 
-        } else { renderCTO(filtered, week); } 
+            const labsOnly = filtered.filter(d => d.lab !== "CTO 통합");
+            labsOnly.forEach(d => { 
+                btns.innerHTML += `<button class="btn-q" onclick="renderLab('${week}', '${d.lab}')">${d.lab}</button>`; 
+            }); 
+            if(labsOnly.length) renderLab(week, labsOnly[0].lab); 
+            else document.getElementById('output').innerHTML = "<p style='text-align:center;'>표시할 Lab 데이터가 없습니다.</p>";
+        } else { 
+            renderCTO(filtered, week); 
+        } 
     }
 
     function wrapContent(html) { if(isEmpty(html)) return ""; return `<div class="content-view">${html}</div>`; }
@@ -264,6 +234,7 @@
         document.getElementById('viewFooter').innerHTML = `<button class="btn-view-action" onclick="loadCTOToEditorAction('${week}')">통합 수정하기</button><button class="btn-view-action" style="background:var(--pdf); color:white; border:none;" onclick="window.print()">PDF로 저장하기</button>`;
     }
 
+    /* 저장/불러오기 로직 유지 */
     function handleLoadPrev() { const lab = document.getElementById('labName').value.trim(); if(!lab || lab === "CTO 통합") showLabSelector('selectLabAndLoad'); else loadPreviousWeekData(lab); }
     function showLabSelector(callback) {
         const labs = [...new Set(db.map(d => d.lab))].filter(l => l && l !== "CTO 통합");
