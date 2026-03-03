@@ -178,17 +178,37 @@
     window.onload = function() {
         document.getElementById('targetDateDisplay').innerText = curWeek.display;
         document.getElementById('writeDay').innerText = `작성일: ${new Date().toLocaleDateString()}`;
+        
         const createEditor = (cont, label, id) => {
-            document.getElementById(cont).innerHTML += `<div class="editor-wrapper" style="margin-bottom:12px;"><div class="toolbar" style="margin-bottom:5px; display:flex; gap:8px; align-items:center;"><strong style="font-size:0.85rem;">▶ ${label}</strong><button class="btn-tool" style="font-size:0.75rem; padding:2px 5px;" onclick="exec('bold')">B</button><button class="btn-tool" style="font-size:0.75rem; padding:2px 5px;" onclick="exec('backColor', 'yellow')">H</button></div><div id="${id}" class="editable" contenteditable="true"></div></div>`;
+            const wrapper = document.createElement('div');
+            wrapper.className = 'editor-wrapper';
+            wrapper.style.marginBottom = '12px';
+            wrapper.innerHTML = `<div class="toolbar" style="margin-bottom:5px; display:flex; gap:8px; align-items:center;"><strong style="font-size:0.85rem;">▶ ${label}</strong><button class="btn-tool" style="font-size:0.75rem; padding:2px 5px;" onclick="exec('bold')">B</button><button class="btn-tool" style="font-size:0.75rem; padding:2px 5px;" onclick="exec('backColor', 'yellow')">H</button></div><div id="${id}" class="editable" contenteditable="true"></div>`;
+            document.getElementById(cont).appendChild(wrapper);
         };
+
         ["금주 주요 일정", "차주 주요 일정"].forEach((l, i) => createEditor('container-1', l, `s1-${i}`));
         fuList.forEach((l, i) => createEditor('container-2', l, `s2-${i}`));
         issueList.forEach((l, i) => createEditor('container-3', l, `issue-${i}`));
+        
         Object.keys(priMap).forEach((title, i) => {
             const safeId = `s4-group-${i}`;
-            document.getElementById('container-4').innerHTML += `<h3 id="${safeId}" class="pri-header">${title}</h3><div id="sub-box-${i}"></div>`;
+            const header = document.createElement('h3');
+            header.id = safeId;
+            header.className = 'pri-header';
+            header.innerText = title;
+            document.getElementById('container-4').appendChild(header);
+
+            const subBox = document.createElement('div');
+            subBox.id = `sub-box-${i}`;
+            document.getElementById('container-4').appendChild(subBox);
+
             document.getElementById('sub-nav-4').innerHTML += `<button id="nav-btn-${i}" class="btn-q" onclick="goToSection('${safeId}')">${title}</button>`;
+            
+            // 4번 하위 입력창 생성 로직 (여기가 핵심!)
+            priMap[title].forEach((sub, j) => createEditor(`sub-box-${i}`, sub, `s4-${i}-${j}`));
         });
+
         updateSortedWeeks();
         window.addEventListener('scroll', handleScroll);
     };
@@ -201,7 +221,10 @@
     }
 
     function updateSortedWeeks() { sortedWeeks = [...new Set(db.map(d => d.weekKey))].sort((a,b) => b.localeCompare(a)); }
-    function updateNavButtons() { document.getElementById('prevWeekBtn').disabled = (currentWeekIdx >= sortedWeeks.length - 1); document.getElementById('nextWeekBtn').disabled = (currentWeekIdx <= 0); }
+    function updateNavButtons() { 
+        if(document.getElementById('prevWeekBtn')) document.getElementById('prevWeekBtn').disabled = (currentWeekIdx >= sortedWeeks.length - 1); 
+        if(document.getElementById('nextWeekBtn')) document.getElementById('nextWeekBtn').disabled = (currentWeekIdx <= 0); 
+    }
     function moveWeek(dir) { const nextIdx = currentWeekIdx + dir; if (nextIdx >= 0 && nextIdx < sortedWeeks.length) { currentWeekIdx = nextIdx; refreshView(); } }
     
     function setMode(mode) { 
@@ -296,11 +319,7 @@
             issueList.forEach((_, i) => document.getElementById(`issue-${i}`).innerHTML = comb('d3', i));
             Object.keys(priMap).forEach((_, i) => priMap[Object.keys(priMap)[i]].forEach((_, j) => {
                 const el = document.getElementById(`s4-${i}-${j}`);
-                if(!el) {
-                     const box = document.getElementById(`sub-box-${i}`);
-                     box.innerHTML += `<div class="editor-wrapper"><div class="toolbar"><strong>▶ ${priMap[Object.keys(priMap)[i]][j]}</strong></div><div id="s4-${i}-${j}" class="editable" contenteditable="true"></div></div>`;
-                }
-                document.getElementById(`s4-${i}-${j}`).innerHTML = combDeep(i, j);
+                if(el) el.innerHTML = combDeep(i, j);
             }));
             window.scrollTo({ top: 0, behavior: "auto" });
         }
@@ -340,11 +359,7 @@
         issueList.forEach((_, i) => document.getElementById(`issue-${i}`).innerHTML = safeStr(d.d3[i])); 
         Object.keys(priMap).forEach((_, i) => priMap[Object.keys(priMap)[i]].forEach((_, j) => { 
             const el = document.getElementById(`s4-${i}-${j}`); 
-            if(!el) {
-                 const box = document.getElementById(`sub-box-${i}`);
-                 box.innerHTML += `<div class="editor-wrapper"><div class="toolbar"><strong>▶ ${priMap[Object.keys(priMap)[i]][j]}</strong></div><div id="s4-${i}-${j}" class="editable" contenteditable="true"></div></div>`;
-            }
-            document.getElementById(`s4-${i}-${j}`).innerHTML = safeStr(d.d4[i][j]); 
+            if(el) el.innerHTML = safeStr(d.d4[i][j]); 
         })); 
     }
     function deleteData(week, labName) { if(confirm(`${labName} 삭제하시겠습니까?`)) { db = db.filter(x => !(x.weekKey === week && x.lab === labName)); localStorage.setItem('weeklyDB', JSON.stringify(db)); currentWeekIdx = 0; refreshView(); } }
