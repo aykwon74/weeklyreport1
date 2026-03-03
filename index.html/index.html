@@ -30,7 +30,6 @@
         .toolbar strong { color: #37474f; font-size: 1.05rem; margin-right: 10px; font-weight: bold; }
         .btn-tool { padding: 4px 10px; font-size: 0.85rem; cursor: pointer; border: 1px solid #cfd8dc; background: #fff; border-radius: 4px; font-weight: bold; }
 
-        /* [수정] 입력창 폰트 크기 통일 */
         .editable { border: 1px solid #ced4da; padding: 15px; min-height: 100px; border-radius: 4px; background: #fff; line-height: 1.6; outline: none; font-size: 1rem; }
         
         .guide-banner { color: #455a64; font-size: 0.95rem; font-weight: bold; background: #e3f2fd; padding: 10px 18px; border-radius: 6px; border-left: 4px solid #2196f3; }
@@ -47,11 +46,15 @@
         .btn-nav { padding: 8px 15px; font-size: 0.9rem; cursor: pointer; border-radius: 5px; border: 1px solid var(--border); background: #fff; font-weight: bold; }
         .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
         
-        /* [수정] 테이블 텍스트 크기 통일 (0.85rem -> 1rem) */
+        /* [수정] 테이블 텍스트 크기 완벽 통일 (th, td 모두 1rem) */
         table { width: 100%; border-collapse: collapse; margin-bottom: 35px; table-layout: fixed; }
-        th, td { border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; font-size: 1rem; }
+        th, td { border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; font-size: 1rem; line-height: 1.6; }
         th { background: #f8f9fa; width: 25%; font-weight: bold; color: #455a64; }
         
+        /* [추가] 조회 시 내용 앞에 자동으로 부호(-)를 붙여주는 스타일 */
+        .content-view { position: relative; padding-left: 15px; }
+        .content-view::before { content: "-"; position: absolute; left: 0; top: 0; color: #546e7a; font-weight: bold; }
+
         .section-tag { font-weight: bold; margin: 35px 0 10px; display: block; font-size: 1.1rem; color: var(--primary); border-left: 5px solid var(--primary); padding-left: 12px; }
         
         .btn-group-view { display: flex; justify-content: center; gap: 15px; margin-top: 30px; padding: 15px; border-top: 1px solid #eee; }
@@ -126,7 +129,6 @@
 </div>
 
 <script>
-    /* 데이터 맵 및 초기 설정 */
     const priMap = {
         "1) AX 기술 Stack 확보": ["SRM align 확보 및 상용화 계획 수립/추천","경쟁력 비교방안 재점검 및 경쟁우위율 목표 수립","SaaS 기반 AX 공용/모듈 구축 및 재활용","소버린 클라우드"],
         "2) SaaS 기술 Stack 확보": ["모듈화 대상 검토 및 선정","SaaS 상품화 벤치마킹 및 요구사항 정리","기술 개발 계획 및 통합 로드맵 도출","SaaS 공통 기술 개발 추진"],
@@ -250,13 +252,18 @@
         } else { renderCTO(filtered, week); } 
     }
 
-    /* [수정] 조회 화면 텍스트 앞에 점(•) 추가 */
+    /* [수정] 조회 시 내용 스타일 적용 함수 */
+    function wrapContent(html) {
+        if(isEmpty(html)) return "";
+        return `<div class="content-view">${html}</div>`;
+    }
+
     function renderLab(week, labName) { 
         const d = db.find(x => x.weekKey === week && x.lab === labName); if(!d) return; 
         document.querySelectorAll('#labButtons .btn-q').forEach(btn => btn.classList.toggle('active-section', btn.innerText === labName));
         let h = `<h2 style="text-align:center;">[${d.lab}] ${week}</h2>`; 
         const makeT = (n, t, lbs, dat) => { 
-            let rs = lbs.map((l, i) => isEmpty(dat[i]) ? '' : `<tr><th>${l}</th><td>• ${safeStr(dat[i])}</td></tr>`).filter(Boolean).join(''); 
+            let rs = lbs.map((l, i) => isEmpty(dat[i]) ? '' : `<tr><th>${l}</th><td>${wrapContent(dat[i])}</td></tr>`).filter(Boolean).join(''); 
             return rs ? `<span class="section-tag">${n}. ${t}</span><table>${rs}</table>` : ''; 
         }; 
         h += makeT("1", "주요 일정", ["금주", "차주"], d.d1); 
@@ -264,7 +271,7 @@
         h += makeT("3", "장애/작업/기타", issueList, d.d3); 
         let pCont = ""; 
         Object.keys(priMap).forEach((t, i) => { 
-            let rs = priMap[t].map((sub, j) => { let v = (d.d4 && d.d4[i]) ? d.d4[i][j] : ""; return isEmpty(v) ? '' : `<tr><th>${sub}</th><td>• ${safeStr(v)}</td></tr>`; }).filter(Boolean).join(''); 
+            let rs = priMap[t].map((sub, j) => { let v = (d.d4 && d.d4[i]) ? d.d4[i][j] : ""; return isEmpty(v) ? '' : `<tr><th>${sub}</th><td>${wrapContent(v)}</td></tr>`; }).filter(Boolean).join(''); 
             if(rs) pCont += `<h3>${t}</h3><table>${rs}</table>`; 
         }); 
         if(pCont) h += `<span class="section-tag">4. 최우선과제 추진 현황</span>` + pCont; 
@@ -272,7 +279,6 @@
         document.getElementById('viewFooter').innerHTML = `<button class="btn-view-action" onclick="loadSingleToEditor('${d.weekKey}', '${d.lab}')">수정하기</button><button class="btn-view-action btn-pdf" onclick="window.print()">PDF로 저장하기</button><button class="btn-view-action" style="color:#d32f2f;" onclick="deleteData('${d.weekKey}', '${d.lab}')">삭제하기</button>`;
     }
 
-    /* [수정] CTO 통합 조회 화면 텍스트 앞에 점(•) 추가 */
     function renderCTO(filtered, week) { 
         let h = `<h2 style="text-align:center;">CTO 통합 주간보고 (${week})</h2>`; 
         const makeCTO = (num, title, labels, key, isDeep = false, dIdx = 0) => { 
@@ -280,7 +286,7 @@
             labels.forEach((l, i) => { 
                 let cell = filtered.filter(d => d.lab !== "CTO 통합").map(d => { 
                     let v = isDeep ? (d.d4 && d.d4[dIdx] ? d.d4[dIdx][i] : "") : d[key][i]; 
-                    return isEmpty(v) ? null : `<div style="margin-bottom:10px; border-bottom:1px dashed #eee;"><b>[${d.lab}]</b><br>• ${safeStr(v)}</div>`; 
+                    return isEmpty(v) ? null : `<div style="margin-bottom:15px; border-bottom:1px dashed #eee; padding-bottom:5px;"><b>[${d.lab}]</b><br>${wrapContent(v)}</div>`; 
                 }).filter(Boolean).join(''); 
                 if(cell) { t += `<tr><th>${l}</th><td>${cell}</td></tr>`; has = true; } 
             }); return has ? t + `</table>` : ''; 
@@ -293,7 +299,6 @@
         document.getElementById('viewFooter').innerHTML = `<button class="btn-view-action" onclick="loadCTOToEditorAction('${week}')">통합 수정하기</button><button class="btn-view-action btn-pdf" onclick="window.print()">PDF로 저장하기</button>`;
     }
 
-    /* 데이터 불러오기 및 저장 로직 (이전과 동일) */
     function handleLoadPrev() { 
         const lab = document.getElementById('labName').value.trim(); 
         if(!lab || lab === "CTO 통합") showLabSelector('selectLabAndLoad');
