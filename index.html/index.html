@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>LAB 주간보고 통합 시스템</title>
+    <style>
+        :root { 
+            --primary: #546e7a; --primary-light: #eceff1; --success: #66bb6a; --bg: #f8f9fa; 
+            --border: #cfd8dc; --accent: #ff9800; --active-gray: #78909c; --pdf: #e53935;
+        }
+        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; background: var(--bg); color: #333; max-width: 1200px; margin: auto; }
+        h1 { text-align: center; color: #111; margin-top: 30px; margin-bottom: 5px; }
+        
+        .target-date { text-align: center; font-weight: bold; font-size: 1.15rem; color: var(--primary); margin-bottom: 30px; background: #fff; display: inline-block; padding: 10px 20px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; left: 50%; transform: translateX(-50%); border: 1px solid var(--border); }
+        
+        .card { background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid #e9ecef; }
+        
+        /* 4번 과제 퀵메뉴 */
+        .sticky-sub-nav { position: sticky; top: 0; z-index: 1000; background: rgba(255,255,255,0.98); padding: 12px; border-bottom: 2px solid var(--primary); display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .btn-q { padding: 6px 12px; font-size: 0.82rem; cursor: pointer; border: 1px solid #dee2e6; background: #fff; color: #495057; border-radius: 4px; font-weight: bold; }
+        .btn-q.active-section { background: var(--active-gray) !important; color: white !important; border-color: var(--active-gray); }
+
+        h2 { font-size: 1.25rem; color: #263238; margin: 40px 0 15px; padding-bottom: 10px; border-bottom: 2px solid #cfd8dc; scroll-margin-top: 150px; }
+        h3 { font-size: 1.15rem; margin: 30px 0 10px; background: var(--primary-light); padding: 14px; border-radius: 4px; border-left: 5px solid var(--primary); font-weight: bold; scroll-margin-top: 180px; }
+        
+        .header-box { display: flex; justify-content: space-between; align-items: flex-start; background: #f1f3f5; padding: 20px; border-radius: 8px; margin-bottom: 10px; }
+        .lab-input { padding: 10px; width: 250px; border: 2px solid #ced4da; border-radius: 4px; font-size: 1rem; }
+
+        .editor-wrapper { margin-bottom: 20px; }
+        .toolbar { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        .toolbar strong { color: #37474f; font-size: 1.05rem; margin-right: 10px; font-weight: bold; }
+        .btn-tool { padding: 4px 10px; font-size: 0.85rem; cursor: pointer; border: 1px solid #cfd8dc; background: #fff; border-radius: 4px; font-weight: bold; }
+
+        .editable { border: 1px solid #ced4da; padding: 15px; min-height: 100px; border-radius: 4px; background: #fff; line-height: 1.6; outline: none; font-size: 1rem; }
+        
+        /* 메가 가이드 문구 스타일 */
+        .guide-banner { color: #455a64; font-size: 0.95rem; font-weight: bold; background: #e3f2fd; padding: 10px 18px; border-radius: 6px; border-left: 4px solid #2196f3; }
+
+        .action-area { display: flex; flex-direction: column; gap: 10px; margin: 40px 0; }
+        .main-btn-style { width: 100%; padding: 18px; font-size: 1.15rem; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; }
+        .reg-btn { background: var(--success); color: white; }
+        .mode-btns { display: flex; gap: 10px; }
+        .btn-mode { flex: 1; background: #fff; color: var(--primary); border: 1.5px solid #cfd8dc; }
+        .btn-mode.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .nav-week-ctrl { display: flex; align-items: center; justify-content: center; gap: 20px; background: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #dee2e6; }
+        .week-display { font-size: 1rem; font-weight: bold; color: var(--primary); min-width: 220px; text-align: center; }
+        .btn-nav { padding: 8px 15px; font-size: 0.9rem; cursor: pointer; border-radius: 5px; border: 1px solid var(--border); background: #fff; font-weight: bold; }
+        .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 35px; table-layout: fixed; }
+        th, td { border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; }
+        th { background: #f8f9fa; width: 25%; font-size: 0.85rem; font-weight: bold; color: #455a64; }
+        .section-tag { font-weight: bold; margin: 35px 0 10px; display: block; font-size: 1.1rem; color: var(--primary); border-left: 5px solid var(--primary); padding-left: 12px; }
+        
+        .btn-group-view { display: flex; justify-content: center; gap: 15px; margin-top: 30px; padding: 15px; border-top: 1px solid #eee; }
+        .btn-view-action { padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9rem; border: 1px solid #cfd8dc; background: #fff; color: #607d8b; }
+        .btn-pdf { background: var(--pdf) !important; color: white !important; border: none !important; }
+
+        @media print {
+            #input-card, .nav-week-ctrl, #labButtons, .btn-group-view, .sticky-sub-nav, h1 { display: none !important; }
+            body { padding: 0; background: white; }
+            .card { box-shadow: none; border: none; }
+        }
+
+        #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:1999; }
+        #labSelector { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:12px; z-index:2000; min-width:320px; text-align:center; }
+    </style>
+</head>
+<body>
+
+<h1>📊 주간보고 통합 시스템</h1>
+<div id="targetDateDisplay" class="target-date"></div>
+
+<div id="overlay" onclick="closeLabSelector()"></div>
+<div id="labSelector">
+    <h4>Lab을 선택해 주세요</h4>
+    <div id="labListArea"></div>
+    <button onclick="closeLabSelector()" style="margin-top:15px; background:none; border:none; color:#888; cursor:pointer;">닫기</button>
+</div>
+
+<div class="card" id="input-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <div class="guide-banner">
+            💡 * 금주에 핵심이 되는 주간보고 내용에 B(볼드)나 H(하이라이트)로 표시해주세요
+        </div>
+        <button onclick="handleLoadPrev()" style="background:var(--accent); color:white; border:none; padding:10px 18px; border-radius:6px; font-weight:bold; cursor:pointer; flex-shrink: 0;">
+            📂 지난주 주간보고 불러오기
+        </button>
+    </div>
+
+    <div class="header-box">
+        <div><strong>Lab 이름:</strong> <input type="text" id="labName" class="lab-input" placeholder="예: 서비스개발Lab"></div>
+        <div id="writeDay"></div>
+    </div>
+
+    <h2 id="section-1">1. 금주/차주 LAB별 주요 일정</h2><div id="container-1"></div>
+    <h2 id="section-2">2. 차주 지시사항 F/U</h2><div id="container-2"></div>
+    <h2 id="section-3">3. 주요 장애/작업/기타 보고사항</h2><div id="container-3"></div>
+    
+    <h2 id="section-4">4. Lab 별 최우선과제 추진 현황</h2>
+    <div id="sub-nav-4" class="sticky-sub-nav"></div>
+    <div id="container-4"></div>
+    
+    <div class="action-area">
+        <button class="main-btn-style reg-btn" onclick="saveData()">등록하기</button>
+        <div class="mode-btns">
+            <button id="btn-lab" class="main-btn-style btn-mode" onclick="setMode('lab')">Lab 별 주간보고 조회</button>
+            <button id="btn-cto" class="main-btn-style btn-mode" onclick="setMode('cto')">CTO 통합 주간보고 조회</button>
+        </div>
+    </div>
+</div>
+
+<div id="resultView" style="display:none;">
+    <div class="nav-week-ctrl">
+        <button id="prevWeekBtn" class="btn-nav" onclick="moveWeek(1)">◀ 이전 주</button>
+        <div id="weekDisplay" class="week-display"></div>
+        <button id="nextWeekBtn" class="btn-nav" onclick="moveWeek(-1)">다음 주 ▶</button>
+    </div>
+    <div class="card">
+        <div id="labButtons" style="margin-bottom:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
+        <div id="output"></div>
+        <div id="viewFooter" class="btn-group-view"></div>
+    </div>
+</div>
+
+<script>
+    const priMap = {
+        "1) AX 기술 Stack 확보": ["SRM align 확보 및 상용화 계획 수립/추천","경쟁력 비교방안 재점검 및 경쟁우위율 목표 수립","SaaS 기반 AX 공용/모듈 구축 및 재활용","소버린 클라우드"],
+        "2) SaaS 기술 Stack 확보": ["모듈화 대상 검토 및 선정","SaaS 상품화 벤치마킹 및 요구사항 정리","기술 개발 계획 및 통합 로드맵 도출","SaaS 공통 기술 개발 추진"],
+        "3) 서비스 생산 시스템 체계 전환": ["SDLC AX화 (ixi-O, AICC, U+one pilot 적용)","SRM-PPM-TRM 연계 수립 (ixi-O, AICC pilot 적용)","기술 자산화 및 활용","개발 프로세스 수립 (ITSM Jira 고려)","SDLC 공정/영역별 점검양식 표준화 (checklist, SOP)","외주협력 관리체계 수립 (Ucube, 모바일, 홈, 기업 등)","개발/검증환경 고도화 및 구축 (ixi-O)","개발/운영 visibility 시스템 검토 및 도입"],
+        "4) AX Readiness": ["[Model Ready] 모델별 가격 경쟁 비교 및 최적 전략","[Model Ready] 모델 개발 workflow 정리 및 최적화","[Model Ready] AXOps 로드맵 수립 및 구현","[Model Ready] 모델 학습 위한 Data Foundry 구축","[Data Ready] 전사 Data 거버넌스","[Data Ready] Agent 서비스 향 데이터 개발","[Data Ready] Knowledge 플랫폼 구축","[Data Ready] Ucube 정형/비정형 데이터 정제 (CSS)","[Agent Ready] AI Agent 플랫폼 및 거버넌스 체계","기타 Lab별 진행현황"],
+        "5) Claud/SaaS 전환 (클라우드)": ["U+표준 클라우드 플랫폼 설계/구축","전체 전환 서비스 대상 Assessment","시범 서비스 전환","기타 Lab별 진행현황"],
+        "6) Claud/SaaS 전환 (IT SaaS)": ["전사 IT SaaS 로드맵 수립","IT SaaS 시스템 간 workflow 맵 수립","3종 IT 시스템 통합 및 마당 전환","Jira, Conf SaaS 통합","메달리아 VOC 허브 구축","업무환경 AI 도입 (Copilot, Gemini)","기타 Lab별 진행현황"],
+        "7) Autonomous Development": ["[직접 개발] workflow 기반 AX 대상 식별 및 계획","[외주 개발] workflow 기반 AX 대상 식별 및 계획","[운영 AX화] workflow 기반 AX 대상 식별 및 계획","시스템/Tool 검토 및 도입 (보안 고려)"],
+        "8) 데이터 기반 Seg. 체계 구축": ["Seg 별 데이터 구축 (5대 Seg 확장)","B2B, B2C 영업 에이전트 구축"],
+        "9) Simply U+ 상품/서비스 혁신": ["Simiple Lab 상품 서비스 혁신","요금/상품/서비스 구조 최적화"],
+        "10) AX 상품 경쟁력 강화 (AICC)": ["ixi-O 글로벌화 및 시스템 모듈화/SaaS화","ixi-O 상품 경쟁력 강화 및 SRM 연계 개발","AICC SaaS 플랫폼 구축","AICC 상품 경쟁력 강화 및 SRM 연계 개발","AICC 상품 수주 대응"],
+        "11) AX 상품 경쟁력 강화 (B2B)": ["ixi-Enterprise 사업화","ixi-Drive 사업화","보안 SaaS","기타 Lab 별 진행사항"],
+        "12) AX 상품 경쟁력 강화 (B2C)": ["일등로밍 실행 과제 개발","스마트CS 페이퍼리스","통합안심 요금제 출시","요금 시뮬레이터","모바일 통신 인프라/서비스 고도화","홈사업 고객경험개선 및 비용효율화","5G SA 전환/주파수"],
+        "13) 고객중심 E2E 품질 체계 구축": ["품질 체크리스트 및 SOP 강화","개발 프로세스 재정립","MTTR 개선과제 도출 및 실행","기타 Lab별 진행현황"],
+        "14) 지속 가능한 보안 실행력 강화": ["CTO 보안 5대과제 (비밀번호, 암호화 등)","자산관리 (서비스/시스템 인벤토리 구축)","Ucube 불용 데이터 정비","모바일 IMSI 체계 변경"],
+        "15) [ZBB] 개발/운영 효율화": ["예산관리 및 ZBB 연계 프로세스 재정립","고정성 인건비 효율화","고정성 수선비/임차료 효율화"]
+    };
+
+    const fuList = ["AX 기술 Stack 확보", "서비스 생산시스템 체계 전환", "Claud/SaaS 전환", "기본기강화", "기타"];
+    const issueList = ["장애", "기타"];
+    let db = JSON.parse(localStorage.getItem('weeklyDB') || '[]');
+    let currentWeekIdx = 0;
+    let sortedWeeks = [];
+
+    function safeStr(v) { return (v === undefined || v === null || v === 'undefined') ? "" : String(v).trim(); }
+    function isEmpty(h) { const s = safeStr(h); return s === "" || s === "<br>" || s === "<div><br></div>"; }
+    function exec(cmd, val=null) { document.execCommand(cmd, false, val); }
+
+    const curWeek = (function(date) {
+        const d = new Date(date); d.setHours(0,0,0,0); d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+        const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
+        const week = Math.ceil((((d - firstDay) / 86400000) + firstDay.getDay() + 1) / 7);
+        const mon = new Date(d); mon.setDate(d.getDate() - 3);
+        const sun = new Date(d); sun.setDate(d.getDate() + 3);
+        const range = `(${mon.getMonth()+1}/${mon.getDate()} ~ ${sun.getMonth()+1}/${sun.getDate()})`;
+        return { full: `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${week}주차`, range, display: `작성 주차: ${d.getFullYear()}년 ${d.getMonth() + 1}월 ${week}주차 ${range}` };
+    })(new Date());
+
+    window.onload = function() {
+        document.getElementById('targetDateDisplay').innerText = curWeek.display;
+        document.getElementById('writeDay').innerText = `작성일: ${new Date().toLocaleDateString()}`;
+        const createEditor = (cont, label, id) => {
+            document.getElementById(cont).innerHTML += `<div class="editor-wrapper"><div class="toolbar"><strong>▶ ${label}</strong><button class="btn-tool" onclick="exec('bold')">B</button><button class="btn-tool" onclick="exec('backColor', 'yellow')">H</button></div><div id="${id}" class="editable" contenteditable="true"></div></div>`;
+        };
+        ["금주 주요 일정", "차주 주요 일정"].forEach((l, i) => createEditor('container-1', l, `s1-${i}`));
+        fuList.forEach((l, i) => createEditor('container-2', l, `s2-${i}`));
+        issueList.forEach((l, i) => createEditor('container-3', l, `issue-${i}`));
+        
+        Object.keys(priMap).forEach((title, i) => {
+            const safeId = `s4-group-${i}`;
+            document.getElementById('container-4').innerHTML += `<h3 id="${safeId}" class="pri-header">${title}</h3><div id="sub-box-${i}"></div>`;
+            document.getElementById('sub-nav-4').innerHTML += `<button id="nav-btn-${i}" class="btn-q" onclick="goToSection('${safeId}')">${title}</button>`;
+            priMap[title].forEach((sub, j) => createEditor(`sub-box-${i}`, sub, `s4-${i}-${j}`));
+        });
+        updateSortedWeeks();
+        window.addEventListener('scroll', handleScroll);
+    };
+
+    function goToSection(id) {
+        const el = document.getElementById(id);
+        if(el) {
+            const offset = el.getBoundingClientRect().top + window.pageYOffset - 175;
+            window.scrollTo({ top: offset, behavior: "auto" });
+        }
+    }
+
+    function handleScroll() {
+        const headers = document.querySelectorAll('.pri-header');
+        let currentIdx = -1;
+        headers.forEach((header, i) => {
+            const rect = header.getBoundingClientRect();
+            if (rect.top <= 190) currentIdx = i;
+        });
+        document.querySelectorAll('#sub-nav-4 .btn-q').forEach((btn, i) => {
+            btn.classList.toggle('active-section', i === currentIdx);
+        });
+    }
+
+    function updateSortedWeeks() { 
+        sortedWeeks = [...new Set(db.map(d => d.weekKey))].sort((a,b) => b.localeCompare(a)); 
+    }
+
+    function updateNavButtons() {
+        document.getElementById('prevWeekBtn').disabled = (currentWeekIdx >= sortedWeeks.length - 1);
+        document.getElementById('nextWeekBtn').disabled = (currentWeekIdx <= 0);
+    }
+
+    function moveWeek(dir) {
+        const nextIdx = currentWeekIdx + dir;
+        if (nextIdx >= 0 && nextIdx < sortedWeeks.length) {
+            currentWeekIdx = nextIdx;
+            refreshView();
+        }
+    }
+
+    function setMode(mode) { 
+        document.getElementById('btn-lab').classList.toggle('active', mode === 'lab'); 
+        document.getElementById('btn-cto').classList.toggle('active', mode === 'cto'); 
+        document.getElementById('resultView').style.display = 'block';
+        currentWeekIdx = 0;
+        refreshView(mode); 
+        window.scrollTo({ top: document.getElementById('resultView').offsetTop - 20, behavior: "auto" });
+    }
+
+    function refreshView(mode) { 
+        updateSortedWeeks();
+        if (sortedWeeks.length === 0) return;
+        const week = sortedWeeks[currentWeekIdx];
+        document.getElementById('weekDisplay').innerText = week;
+        updateNavButtons();
+        const filtered = db.filter(d => d.weekKey === week); 
+        const btns = document.getElementById('labButtons'); btns.innerHTML = ""; 
+        const curMode = mode || (document.getElementById('btn-lab').classList.contains('active') ? 'lab' : 'cto'); 
+        
+        if(curMode === 'lab') { 
+            const selLab = filtered.length ? filtered[0].lab : null;
+            filtered.forEach(d => {
+                btns.innerHTML += `<button class="btn-q ${d.lab === selLab ? "active-section" : ""}" onclick="renderLab('${week}', '${d.lab}')">${d.lab}</button>`;
+            }); 
+            if(selLab) renderLab(week, selLab); 
+        } else { renderCTO(filtered, week); } 
+    }
+
+    function renderLab(week, labName) { 
+        const d = db.find(x => x.weekKey === week && x.lab === labName); if(!d) return; 
+        document.querySelectorAll('#labButtons .btn-q').forEach(btn => btn.classList.toggle('active-section', btn.innerText === labName));
+        let h = `<h2 style="text-align:center;">[${d.lab}] ${week}</h2>`; 
+        const makeT = (n, t, lbs, dat) => { 
+            let rs = lbs.map((l, i) => isEmpty(dat[i]) ? '' : `<tr><th>${l}</th><td>${safeStr(dat[i])}</td></tr>`).filter(Boolean).join(''); 
+            return rs ? `<span class="section-tag">${n}. ${t}</span><table>${rs}</table>` : ''; 
+        }; 
+        h += makeT("1", "주요 일정", ["금주", "차주"], d.d1); 
+        h += makeT("2", "지시사항 F/U", fuList, d.d2); 
+        h += makeT("3", "장애/작업/기타", issueList, d.d3); 
+        let pCont = ""; 
+        Object.keys(priMap).forEach((t, i) => { 
+            let rs = priMap[t].map((sub, j) => { let v = (d.d4 && d.d4[i]) ? d.d4[i][j] : ""; return isEmpty(v) ? '' : `<tr><th>${sub}</th><td>${safeStr(v)}</td></tr>`; }).filter(Boolean).join(''); 
+            if(rs) pCont += `<h3>${t}</h3><table>${rs}</table>`; 
+        }); 
+        if(pCont) h += `<span class="section-tag">4. 최우선과제 추진 현황</span>` + pCont; 
+        document.getElementById('output').innerHTML = h; 
+        document.getElementById('viewFooter').innerHTML = `<button class="btn-view-action" onclick="loadSingleToEditor('${d.weekKey}', '${d.lab}')">수정하기</button><button class="btn-view-action btn-pdf" onclick="window.print()">PDF로 저장하기</button><button class="btn-view-action" style="color:#d32f2f;" onclick="deleteData('${d.weekKey}', '${d.lab}')">삭제하기</button>`;
+    }
+
+    function renderCTO(filtered, week) { 
+        let h = `<h2 style="text-align:center;">CTO 통합 주간보고 (${week})</h2>`; 
+        const makeCTO = (num, title, labels, key, isDeep = false, dIdx = 0) => { 
+            let t = `<span class="section-tag">${num ? num + '. ' : ''}${title}</span><table>`; let has = false; 
+            labels.forEach((l, i) => { 
+                let cell = filtered.filter(d => d.lab !== "CTO 통합").map(d => { 
+                    let v = isDeep ? (d.d4 && d.d4[dIdx] ? d.d4[dIdx][i] : "") : d[key][i]; 
+                    return isEmpty(v) ? null : `<div style="margin-bottom:10px; border-bottom:1px dashed #eee;"><b>[${d.lab}]</b><br>${safeStr(v)}</div>`; 
+                }).filter(Boolean).join(''); 
+                if(cell) { t += `<tr><th>${l}</th><td>${cell}</td></tr>`; has = true; } 
+            }); return has ? t + `</table>` : ''; 
+        }; 
+        h += makeCTO("1", "주요 일정", ["금주", "차주"], 'd1'); 
+        h += makeCTO("2", "지시사항 F/U", fuList, 'd2'); 
+        h += makeCTO("3", "장애/작업/기타", issueList, 'd3'); 
+        Object.keys(priMap).forEach((title, i) => h += makeCTO("", title, priMap[title], 'd4', true, i)); 
+        document.getElementById('output').innerHTML = h; 
+        document.getElementById('viewFooter').innerHTML = `<button class="btn-view-action" onclick="loadCTOToEditorAction('${week}')">통합 수정하기</button><button class="btn-view-action btn-pdf" onclick="window.print()">PDF로 저장하기</button>`;
+    }
+
+    function handleLoadPrev() { 
+        const lab = document.getElementById('labName').value.trim(); 
+        if(!lab || lab === "CTO 통합") showLabSelector('selectLabAndLoad');
+        else loadPreviousWeekData(lab);
+    }
+
+    function showLabSelector(callback) {
+        const labs = [...new Set(db.map(d => d.lab))].filter(l => l && l !== "CTO 통합");
+        if(labs.length === 0) return alert("데이터가 없습니다.");
+        const area = document.getElementById('labListArea'); area.innerHTML = "";
+        labs.forEach(lab => { area.innerHTML += `<button class="btn-q" style="display:block; width:100%; margin-bottom:5px;" onclick="${callback}('${lab}')">${lab}</button>`; });
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('labSelector').style.display = 'block';
+    }
+
+    function selectLabAndLoad(lab) { document.getElementById('labName').value = lab; closeLabSelector(); loadPreviousWeekData(lab); }
+    function closeLabSelector() { document.getElementById('overlay').style.display = 'none'; document.getElementById('labSelector').style.display = 'none'; }
+
+    function loadPreviousWeekData(lab) {
+        updateSortedWeeks(); const pastWeeks = sortedWeeks.filter(w => !w.startsWith(curWeek.full));
+        if(pastWeeks.length === 0) return alert("이전 주차 데이터가 없습니다.");
+        const prevData = db.find(x => x.weekKey === pastWeeks[0] && x.lab === lab);
+        if(prevData && confirm(`지난주 데이터를 불러올까요?`)) fillEditor(prevData);
+    }
+
+    function fillEditor(d) { 
+        document.getElementById('s1-0').innerHTML = safeStr(d.d1[0]); document.getElementById('s1-1').innerHTML = safeStr(d.d1[1]); 
+        fuList.forEach((_, i) => document.getElementById(`s2-${i}`).innerHTML = safeStr(d.d2[i])); 
+        issueList.forEach((_, i) => document.getElementById(`issue-${i}`).innerHTML = safeStr(d.d3[i])); 
+        Object.keys(priMap).forEach((_, i) => priMap[Object.keys(priMap)[i]].forEach((_, j) => {
+            const el = document.getElementById(`s4-${i}-${j}`); if(el) el.innerHTML = safeStr(d.d4[i][j]);
+        })); 
+    }
+
+    function loadSingleToEditor(week, lab) { if(confirm('편집창으로 불러올까요?')) { const d = db.find(x => x.weekKey === week && x.lab === lab); document.getElementById('labName').value = d.lab; fillEditor(d); window.scrollTo({ top: 0, behavior: "auto" }); } }
+    
+    function loadCTOToEditorAction(week) {
+        if(confirm('모든 내용을 편집창으로 불러올까요?')) {
+            const filtered = db.filter(d => d.weekKey === week && d.lab !== "CTO 통합");
+            document.getElementById('labName').value = "CTO 통합";
+            const comb = (key, idx) => filtered.map(d => isEmpty(d[key][idx]) ? "" : `<div><b>[${d.lab}]</b><br>${d[key][idx]}</div>`).filter(Boolean).join("");
+            const combDeep = (i, j) => filtered.map(d => (d.d4 && d.d4[i] && !isEmpty(d.d4[i][j])) ? `<div><b>[${d.lab}]</b><br>${d.d4[i][j]}</div>` : "").filter(Boolean).join("");
+            document.getElementById('s1-0').innerHTML = comb('d1', 0); document.getElementById('s1-1').innerHTML = comb('d1', 1);
+            fuList.forEach((_, i) => document.getElementById(`s2-${i}`).innerHTML = comb('d2', i));
+            issueList.forEach((_, i) => document.getElementById(`issue-${i}`).innerHTML = comb('d3', i));
+            Object.keys(priMap).forEach((_, i) => priMap[Object.keys(priMap)[i]].forEach((_, j) => document.getElementById(`s4-${i}-${j}`).innerHTML = combDeep(i, j)));
+            window.scrollTo({ top: 0, behavior: "auto" });
+        }
+    }
+
+    function saveData() { 
+        const lab = document.getElementById('labName').value.trim(); if(!lab) return alert("Lab 이름을 입력하세요.");
+        const fullWeekKey = curWeek.full + " " + curWeek.range; 
+        const entry = { weekKey: fullWeekKey, lab, d1: [document.getElementById('s1-0').innerHTML, document.getElementById('s1-1').innerHTML], d2: fuList.map((_, i) => document.getElementById(`s2-${i}`).innerHTML), d3: issueList.map((_, i) => document.getElementById(`issue-${i}`).innerHTML), d4: Object.keys(priMap).map((_, i) => priMap[Object.keys(priMap)[i]].map((_, j) => document.getElementById(`s4-${i}-${j}`).innerHTML)) }; 
+        db = db.filter(item => !(item.weekKey === fullWeekKey && item.lab === lab)); db.push(entry); localStorage.setItem('weeklyDB', JSON.stringify(db)); 
+        alert("저장되었습니다."); updateSortedWeeks(); setMode('lab'); 
+    }
+    function deleteData(week, labName) { if(confirm(`${labName} 삭제하시겠습니까?`)) { db = db.filter(x => !(x.weekKey === week && x.lab === labName)); localStorage.setItem('weeklyDB', JSON.stringify(db)); currentWeekIdx = 0; refreshView(); } }
+</script>
+</body>
+</html>
