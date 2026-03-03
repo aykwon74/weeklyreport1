@@ -46,13 +46,15 @@
         .btn-nav { padding: 8px 15px; font-size: 0.9rem; cursor: pointer; border-radius: 5px; border: 1px solid var(--border); background: #fff; font-weight: bold; }
         .btn-nav:disabled { opacity: 0.4; cursor: not-allowed; }
         
-        /* [수정] 테이블 텍스트 크기 완벽 통일 (th, td 모두 1rem) */
+        /* 테이블 텍스트 크기 완벽 통일 */
         table { width: 100%; border-collapse: collapse; margin-bottom: 35px; table-layout: fixed; }
         th, td { border: 1px solid #cfd8dc; padding: 12px; text-align: left; vertical-align: top; font-size: 1rem; line-height: 1.6; }
         th { background: #f8f9fa; width: 25%; font-weight: bold; color: #455a64; }
         
-        /* [추가] 조회 시 내용 앞에 자동으로 부호(-)를 붙여주는 스타일 */
-        .content-view { position: relative; padding-left: 15px; }
+        /* [추가] 랩 명 텍스트 크기도 1rem으로 통일 */
+        .cto-lab-name { font-size: 1rem; font-weight: bold; color: #333; display: block; margin-bottom: 5px; }
+        
+        .content-view { position: relative; padding-left: 15px; font-size: 1rem; }
         .content-view::before { content: "-"; position: absolute; left: 0; top: 0; color: #546e7a; font-weight: bold; }
 
         .section-tag { font-weight: bold; margin: 35px 0 10px; display: block; font-size: 1.1rem; color: var(--primary); border-left: 5px solid var(--primary); padding-left: 12px; }
@@ -252,7 +254,6 @@
         } else { renderCTO(filtered, week); } 
     }
 
-    /* [수정] 조회 시 내용 스타일 적용 함수 */
     function wrapContent(html) {
         if(isEmpty(html)) return "";
         return `<div class="content-view">${html}</div>`;
@@ -286,7 +287,7 @@
             labels.forEach((l, i) => { 
                 let cell = filtered.filter(d => d.lab !== "CTO 통합").map(d => { 
                     let v = isDeep ? (d.d4 && d.d4[dIdx] ? d.d4[dIdx][i] : "") : d[key][i]; 
-                    return isEmpty(v) ? null : `<div style="margin-bottom:15px; border-bottom:1px dashed #eee; padding-bottom:5px;"><b>[${d.lab}]</b><br>${wrapContent(v)}</div>`; 
+                    return isEmpty(v) ? null : `<div style="margin-bottom:15px; border-bottom:1px dashed #eee; padding-bottom:5px;"><span class="cto-lab-name">[${d.lab}]</span>${wrapContent(v)}</div>`; 
                 }).filter(Boolean).join(''); 
                 if(cell) { t += `<tr><th>${l}</th><td>${cell}</td></tr>`; has = true; } 
             }); return has ? t + `</table>` : ''; 
